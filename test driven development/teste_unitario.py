@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 
 sys.path.insert(0, '..')
 
-from main import app, db, User
+from app import app, db, User
 
 
 class FlaskTestCase(unittest.TestCase):
@@ -15,26 +15,38 @@ class FlaskTestCase(unittest.TestCase):
         self.app.config['TESTING'] = True
         self.app.config['WTF_CSRF_ENABLED'] = False
         self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-        db.create_all()
+        with self.app.app_context():
+            db.create_all()
+
+        self.test_user = User(email='test@test.com', name='test', password=generate_password_hash('test123', method='pbkdf2:sha256', salt_length=8))
+        with self.app.app_context():
+            db.session.add(self.test_user)
+            db.session.commit()
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        with self.app.app_context():
+            db.session.remove()
+            db.drop_all()
 
-    def test_register_route(self):
-        response = self.client.post('/register',
-                                    data=dict(email='test@test.com', name='test', password='test123', submit='Sign Up'),
-                                    follow_redirects=True)
-        user = User.query.filter_by(email='test@test.com').first()
+    def teste_registro(self):
+        response = self.client.post('/register', data=dict(email='test2@test.com', name='test2', password='test1234', submit='Sign Up'), follow_redirects=True)
+        user = User.query.filter_by(email='test2@test.com').first()
         self.assertIsNotNone(user)
         self.assertEqual(response.status_code, 200)
 
-    def test_login_route(self):
-        hashed_password = generate_password_hash('test123', method='pbkdf2:sha256', salt_length=8)
-        user = User(email='test@test.com', name='test', password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
+    def test_register_existing_email(self):
+        response = self.client.post('/register', data=dict(email='test@test.com', name='test2', password='test1234',
+                                                           submit='Sign Up'), follow_redirects=True)
+        self.assertIn("Este email já foi cadastrado anteriormente, entre ao inves de cadastrar!",
+                      response.data.decode())
+        self.assertEqual(response.status_code, 200)
 
+    def test_register_invalid_password(self):
+        response = self.client.post('/register', data=dict(email='test2@test.com', name='test2', password='123', submit='Sign Up'), follow_redirects=True)
+        self.assertIn("Field must be between 4 and 100 characters long.", response.data.decode())
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_route(self):
         response = self.client.post('/login', data=dict(email='test@test.com', password='test123', submit='Log In'),
                                     follow_redirects=True)
 
