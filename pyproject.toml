@@ -1,9 +1,9 @@
 [tool]
 [tool.poetry]
-authors = ["Your Name <you@example.com>"]
+authors = ["Renan Pires <renan.sp.121@hotmail.com>"]
 name = "root"
 version = "0.0.0"
 description="flask template"
 [tool.poetry.dependencies]
-flask = "==1.0.2"
-python = "^3.8"
+flask = "==1.1.2"
+python = "^3.11"
