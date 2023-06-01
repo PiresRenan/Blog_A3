@@ -7,3 +7,4 @@ description="flask template"
 [tool.poetry.dependencies]
 flask = "==1.1.2"
 python = "^3.11"
+requests = "^2.31.0"
