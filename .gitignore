@@ -1,4 +1,9 @@
-./venv
-./poetry.lock
-./pyproject.toml
-./blog.db
+venv/
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+*.so
+*.ipynb
+*.db
+.DS_Store
