@@ -4,9 +4,9 @@ from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from flask_login import LoginManager
 from flask_gravatar import Gravatar
-from config import Config
-from models import User, db
-from routes import routes
+from config.configuration import Config
+from model.db import User, db
+from routes.main_routes import routes
 
 app = Flask(__name__)
 app.config.from_object(Config)
