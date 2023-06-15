@@ -1,9 +1,9 @@
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
+
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(100))
     posts = relationship("BlogPost", back_populates="author")
     comments = relationship("Comment", back_populates="comment_author")
+
 
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
@@ -25,6 +26,7 @@ class BlogPost(db.Model):
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
     comments = relationship("Comment", back_populates="parent_post")
+
 
 class Comment(db.Model):
     __tablename__ = "comments"
