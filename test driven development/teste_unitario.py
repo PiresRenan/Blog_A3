@@ -167,6 +167,11 @@ class FlaskTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-
+    def test_login_invalid_credentials(self):
+    response = self.client.post('/login', data=dict(email='test@test.com', password='senhaerrada', submit='Log In'),
+                                follow_redirects=True)
+    self.assertIn("Email ou senha inválidos. Por favor, tente novamente.", response.data.decode())
+    self.assertEqual(response.status_code, 200)
+        
 if __name__ == '__main__':
     unittest.main()
