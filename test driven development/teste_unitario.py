@@ -156,6 +156,16 @@ class FlaskTestCase(unittest.TestCase):
         self.assertIsNotNone(comment)
 
         self.assertEqual(response.status_code, 200)
+    def test_new_post(self):
+        response = self.client.post('/new-post', data=dict(title='Peixe boi nasce precoce', subtitle='Filhote com problemas físicos', body='O filhote nasceu antes da hora, e desenvolveu algumas características especiais.', img_url='https://www.ipe.org.br/images/capas/peixe-boi.jpg', author=self.test_user, date='06 14 2023'),
+                                    follow_redirects=True)
+
+        print(response)
+
+        with self.client.session_transaction() as sess:
+            self.assertIn('_user_id', sess)
+
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
