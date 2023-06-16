@@ -92,14 +92,14 @@ class FlaskTestCase(unittest.TestCase):
                          follow_redirects=True)
 
         date_now = datetime.now()
-        post = BlogPost(id=1, title="Titulo original", subtitle="Subtitulo original", img_url="https://teste.com",
+        post = BlogPost(id=1, title="Titulo Original", subtitle="Subtitulos original", img_url="https://teste.com",
                         body="Corpo original", date=date_now)
         with self.app.app_context():
             db.session.add(post)
             db.session.commit()
 
         response = self.client.post('/edit-post/1',
-                                    data=dict(title='Titulo editado', subtitle='Subtitulo editado',
+                                    data=dict(title='Titulo editados', subtitle='Subtitulo editado',
                                               body='Corpo editado',
                                               img_url="https://teste.com", submit='Submit Post'),
                                     follow_redirects=True)
@@ -167,6 +167,11 @@ class FlaskTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-
+    def test_login_invalid_credentials(self):
+    response = self.client.post('/login', data=dict(email='test@test.com', password='senhaerrada', submit='Log In'),
+                                follow_redirects=True)
+    self.assertIn("Email ou senha inválidos. Por favor, tente novamente.", response.data.decode())
+    self.assertEqual(response.status_code, 200)
+        
 if __name__ == '__main__':
     unittest.main()
