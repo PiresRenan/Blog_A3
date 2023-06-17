@@ -1,10 +1,12 @@
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
 
+
+# This is a class representing a user in a database with attributes such as email, password, name, and
+# relationships with blog posts and comments.
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +16,9 @@ class User(UserMixin, db.Model):
     posts = relationship("BlogPost", back_populates="author")
     comments = relationship("Comment", back_populates="comment_author")
 
+
+# This is a class for a blog post with attributes such as author, title, subtitle, date, body, image
+# URL, and comments.
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
@@ -26,6 +31,9 @@ class BlogPost(db.Model):
     img_url = db.Column(db.String(250), nullable=False)
     comments = relationship("Comment", back_populates="parent_post")
 
+
+# This is a class for creating a Comment object with attributes such as id, post_id, author_id,
+# parent_post, comment_author, and text.
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
